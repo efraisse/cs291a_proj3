@@ -5,7 +5,10 @@ module.exports = {
   mode: "production",
   devtool: "source-map",
   entry: {
-    application: "./app/javascript/application.js"
+    application: "./app/javascript/application.js",
+    posts: "./app/javascript/posts.js",
+    users: "./app/javascript/users.js",
+    comments: "./app/javascript/comments.js",
   },
   module: {
     rules: [
