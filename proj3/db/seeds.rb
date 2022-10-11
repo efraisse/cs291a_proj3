@@ -40,37 +40,37 @@ posts = Post.create([
         idpost: 31,
         text: "nice post 1!",
         imageurl: "imageurl1",
-        user_id: 11
+        user: users.first
     },
     {
         idpost: 32,
         text: "nice post 2!",
         imageurl: "imageurl2",
-        user_id: 12
+        user: users.second
     },
     {
         idpost: 33,
         text: "nice post 3!",
         imageurl: "imageurl3",
-        user_id: 13
+        user: users.third
     },
     {
         idpost: 34,
         text: "nice post 4!",
         imageurl: "imageurl4",
-        user_id: 14
+        user: users.fourth
     },
     {
         idpost: 35,
         text: "nice post 5!",
         imageurl: "imageurl5",
-        user_id: 15
+        user: users.fifth
     },
     {
         idpost: 36,
         text: "nice post 6!",
         imageurl: "imageurl6",
-        user_id: 16
+        user: users[5]
     }
 ])
 
@@ -81,38 +81,38 @@ comments = Comment.create([
     {
         idcomment: 21,
         text: "nice post 1!",
-        post_id: 31,
-        user_id: 11
+        post: posts.first,
+        user: users.first
     },
     {
         idcomment: 22,
         text: "nice post 2!",
-        post_id: 32,
-        user_id: 12
+        post: posts.second,
+        user: users.second
     },
     {
         idcomment: 23,
         text: "nice post 3!",
-        post_id: 33,
-        user_id: 13
+        post: posts.third,
+        user: users.third
     },
     {
         idcomment: 24,
         text: "nice post 4!",
-        post_id: 34,
-        user_id: 14
+        post: posts.fourth,
+        user: users.fourth
     },
     {
         idcomment: 25,
         text: "nice post 5!",
-        post_id: 35,
-        user_id: 15
+        post: posts.fifth,
+        user: users.fifth
     },
     {
         idcomment: 26,
         text: "nice post 6!",
-        post_id: 36,
-        user_id: 16
+        post: posts[5],
+        user: users[5]
     }   
 ])
 
