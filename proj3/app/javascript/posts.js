@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom';
 function Posts() {
   return (
     <div>
-      <h1>Posts</h1>
+      <div className="m-5">
+        <h1 className="text-center">Posts</h1>
+      </div>
     </div>
   )
 }
@@ -15,8 +17,10 @@ let id = path[path.length-1]
 function PostsID() {
     return (
       <div>
-        <h1>Posts with Id</h1>
-        <h2>Id: {id}</h2>
+        <div className="m-5">
+          <h1 className="text-center">Posts with Id</h1>
+          <h2 className="text-center">Id: {id}</h2>
+        </div>
       </div>
     )
 }

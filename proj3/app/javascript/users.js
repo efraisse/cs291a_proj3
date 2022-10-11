@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom';
 function Users() {
   return (
     <div>
-      <h1>Users</h1>
+      <div className="m-5">
+        <h1 className="text-center">Users</h1>
+      </div>
     </div>
   )
 }
