@@ -6,7 +6,7 @@ class PostsController < AppPostsController
     end
 
     def show #params[:id] should have the id value passed in
-        post = Post.find_by(idpost: params[:idpost])
+        post = Post.find_by(idpost: params[:id])
 
         render json: PostSerializer.new(post, options).serialized_json
     end
@@ -22,7 +22,7 @@ class PostsController < AppPostsController
     end
 
     def update
-        post = Post.find_by(idpost: params[:idpost])
+        post = Post.find_by(idpost: params[:id])
 
         if post.update(post_params)
             render json: PostSerializer.new(post, options).serialized_json
@@ -32,7 +32,7 @@ class PostsController < AppPostsController
     end
 
     def destroy #need to destroy all comments associated with this post
-        post = Post.find_by(idpost: params[:idpost])
+        post = Post.find_by(idpost: params[:id])
 
         if post.destroy
             head :no_content
@@ -44,7 +44,7 @@ class PostsController < AppPostsController
     private
 
     def post_params
-        params.require(post).permit(:idpost, :text, :imageurl)
+        params.require(post).permit(:id, :text, :imageurl)
     end
 
     def options
