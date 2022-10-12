@@ -5,7 +5,7 @@ class CommentsController < AppCommentsController
         render json: CommentSerializer.new(comments).serialized_json
     end
 
-    def show #probably don't need a show function but it's here anyways
+    def show
         comment = Comment.find_by(idcomment: params[:idcomment])
 
         if comment

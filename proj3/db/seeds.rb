@@ -2,8 +2,6 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 #
 
-#user Ids will start with a one
-
 users = User.create([
     {
         iduser: 11,
@@ -34,7 +32,6 @@ users = User.create([
 p "Created #{User.count} users"
 
 
-#Post Ids will start with a three
 posts = Post.create([
     {
         idpost: 31,
@@ -76,7 +73,6 @@ posts = Post.create([
 
 p "Created #{Post.count} posts"
 
-#comment Ids will start with a two
 comments = Comment.create([
     {
         idcomment: 21,
