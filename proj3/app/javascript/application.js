@@ -6,6 +6,11 @@ import {
   Route,
   Link
 } from "react-router-dom";
+
+
+//import '../../node_modules/bootstrap/dist/css/bootstrap.css';
+
+
 //import PostsComp from './components/posts.js'
 
 /*function App({Component, pageProps}) {
@@ -54,7 +59,9 @@ function Posts() {
 function App() {
   return (
     <div>
-      <h1>Hello</h1>
+      <div className="m-5">
+        <h1 className="text-center">Hello</h1>
+      </div>
     </div>
   )
 }

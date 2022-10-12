@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom';
 function Comments() {
   return (
     <div>
-      <h1>Comments</h1>
+      <div className="m-5">
+          <h1 className="text-center">Comments</h1>
+      </div>
     </div>
   )
 }

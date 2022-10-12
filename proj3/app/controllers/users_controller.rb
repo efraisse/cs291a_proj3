@@ -54,4 +54,6 @@ class UsersController < AppUsersController
     def options
         @options ||= {include: %i[posts]}
     end
+    def show
+    end
 end
