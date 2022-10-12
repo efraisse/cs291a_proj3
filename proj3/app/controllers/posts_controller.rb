@@ -8,7 +8,11 @@ class PostsController < AppPostsController
     def show #params[:id] should have the id value passed in
         post = Post.find_by(idpost: params[:id])
 
-        render json: PostSerializer.new(post, options).serialized_json
+        if post
+            render json: PostSerializer.new(post, options).serialized_json
+        else
+            render json: {error: post.errors.messages }, status: 404
+        end
     end
 
     def create
@@ -17,7 +21,7 @@ class PostsController < AppPostsController
         if post.save
             render json: PostSerializer.new(post).serialized_json
         else
-            render json: {error: post.errors.messages }, status: 422
+            render json: {error: post.errors.messages }, status: 404
         end
     end
 
@@ -27,7 +31,7 @@ class PostsController < AppPostsController
         if post.update(post_params)
             render json: PostSerializer.new(post, options).serialized_json
         else
-            render json: {error: post.errors.messages }, status: 422
+            render json: {error: post.errors.messages }, status: 404
         end
     end
 
@@ -37,7 +41,7 @@ class PostsController < AppPostsController
         if post.destroy
             head :no_content
         else
-            render json: {error: post.errors.messages }, status: 422
+            render json: {error: post.errors.messages }, status: 404
         end
     end
 

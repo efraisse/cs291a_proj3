@@ -8,7 +8,11 @@ class CommentsController < AppCommentsController
     def show #probably don't need a show function but it's here anyways
         comment = Comment.find_by(idcomment: params[:idcomment])
 
-        render json: CommentSerializer.new(comment).serialized_json
+        if comment
+            render json: CommentSerializer.new(comment).serialized_json
+        else
+            render json: {error: comment.errors.messages }, status: 404
+        end
     end
 
     def create
@@ -17,7 +21,7 @@ class CommentsController < AppCommentsController
         if comment.save
             render json: CommentSerializer.new(comment).serialized_json
         else
-            render json: {error: comment.errors.messages }, status: 422
+            render json: {error: comment.errors.messages }, status: 404
         end
     end
 
@@ -27,7 +31,7 @@ class CommentsController < AppCommentsController
         if comment.update
             render json: CommentSerializer.new(comment).serialized_json
         else
-            render json: {error: comment.errors.messages }, status: 422
+            render json: {error: comment.errors.messages }, status: 404
         end
     end
 
@@ -37,7 +41,7 @@ class CommentsController < AppCommentsController
         if comment.destroy
             head :no_content
         else
-            render json: {error: comment.errors.messages }, status: 422
+            render json: {error: comment.errors.messages }, status: 404
         end
     end
 

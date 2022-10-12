@@ -8,7 +8,11 @@ class UsersController < AppUsersController
     def show #params[:id] should have the id value passed in
         user = User.find_by(iduser: params[:iduser])
 
-        render json: UserSerializer.new(user, options).serialized_json
+        if user
+            render json: UserSerializer.new(user, options).serialized_json
+        else
+            render json: {error: user.errors.messages }, status: 404
+        end
     end
 
     def create
@@ -17,7 +21,7 @@ class UsersController < AppUsersController
         if user.save
             render json: UserSerializer.new(user).serialized_json
         else
-            render json: {error: user.errors.messages }, status: 422
+            render json: {error: user.errors.messages }, status: 404
         end
     end
 
@@ -27,7 +31,7 @@ class UsersController < AppUsersController
         if user.update
             render json: UserSerializer.new(user, options).serialized_json
         else
-            render json: {error: user.errors.messages }, status: 422
+            render json: {error: user.errors.messages }, status: 404
         end
     end
 
@@ -37,7 +41,7 @@ class UsersController < AppUsersController
         if user.destroy
             head :no_content
         else
-            render json: {error: user.errors.messages }, status: 422
+            render json: {error: user.errors.messages }, status: 404
         end
     end
 
