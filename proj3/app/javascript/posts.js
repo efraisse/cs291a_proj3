@@ -57,11 +57,46 @@ let path = window.location.pathname.split("/")
 let id = path[path.length-1]
 
 function PostsID() {
+  var comments_json = [
+    {
+      "iduser": 1,
+      "comment": "very nice",
+    },
+    {
+      "iduser": 5,
+      "comment": "This is SO COOL!!!!",
+    }
+  ];
   return (
     <div>
       <div className="m-5">
         <h1 className="text-center">Posts with Id</h1>
-        <h2 className="text-center">Id: {id}</h2>
+        <h2 className="text-center">Post Id: {id}</h2>
+      </div>
+      <div className="m-5">
+        <h2>Post</h2>
+      </div>
+      <div className="m-5">
+        <table className="table table-sm table-responsive table-hover table-striped">
+          <thead>
+            <tr>
+              <th className="text-center"></th>
+              <th className="text-center">Commenter User ID</th>
+              <th className="text-center">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comments_json.map((comment, i) => {
+              return (
+                <tr>
+                  <td scope="row">{i+1}</td>
+                  <td width="20%">{comment["iduser"]}</td>
+                  <td className="text-center" width="70%">{comment["comment"]}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
