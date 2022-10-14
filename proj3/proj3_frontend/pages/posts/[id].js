@@ -1,31 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import ErrorPage from 'next/error';
-
-
-/*
-<div className="m-5">
-            <table className="table table-sm table-responsive table-hover table-striped">
-              <thead>
-                <tr>
-                  <th className="text-center"></th>
-                  <th className="text-center">Commenter User ID</th>
-                  <th className="text-center">Comment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comments_json.map((comment, i) => {
-                  return (
-                    <tr>
-                      <td scope="row">{i+1}</td>
-                      <td width="20%">{comment["iduser"]}</td>
-                      <td className="text-center" width="70%">{comment["comment"]}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>*/
+//import ErrorPage from 'next/error';
+import Error from 'next/error';
+import Button from 'react-bootstrap/Button';
 
 
 /*
@@ -83,10 +60,38 @@ const getComments = () => {
     return comments_json;
 }
 
+const deletePost = (id) => {
+    console.log("delete " + id);
+}
+
+const getServerSideProps = async ({query, req, res}) => {
+    var posts_json = getPosts();
+
+    const {id} = query;
+
+    var in_posts = false;
+    for (let i = 0; i < posts_json.length; i++) {
+        if(posts_json[i]["postid"] == id){
+            in_posts = true;
+            break;
+        }
+    }
+
+    if(!in_posts){
+        res.writeHead(404, { location: `${encodeURI(req.url)}` }).end();
+        return { props: {} };
+    }
+    
+    return { props: {} };
+};
+
+export { getServerSideProps }
+
 const PostsId = () => {
     const router = useRouter();
     const { id } = router.query;
-    var posts_json = getPosts();
+    
+    /*var posts_json = getPosts();
 
     var in_posts = false;
     for (let i = 0; i < posts_json.length; i++) {
@@ -98,9 +103,9 @@ const PostsId = () => {
 
     if(!in_posts){
         return (
-            <ErrorPage statusCode={404} />
+            <Error statusCode={404} />
         );
-    }
+    }*/
 
     var comments_json = getComments();
 
@@ -112,6 +117,13 @@ const PostsId = () => {
           </div>
           <div className="m-5">
             <h2>Post</h2>
+          </div>
+          <div className="m-5">
+            <h3>Update Post:</h3>
+          </div>
+          <div className="m-5">
+            <h3>Delete Post:</h3>
+            <Button variant="danger" onClick={(e) => {deletePost(id)}}>Delete</Button>
           </div>
           <div className="m-5">
             <table className="table table-sm table-responsive table-hover table-striped">

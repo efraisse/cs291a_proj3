@@ -18,6 +18,10 @@ const getPosts = () => {
     return posts_json;
 }
 
+const deletePost = (i) => {
+    console.log("delete " + i);
+}
+
 const Posts = () => {
     var posts_json = getPosts();
     
@@ -35,6 +39,7 @@ const Posts = () => {
                             <th className="text-center">Post ID</th>
                             <th className="text-center">Post</th>
                             <th className="text-center">View Posts</th>
+                            <th className="text-center">Delete Posts</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,13 +47,16 @@ const Posts = () => {
                             return (
                                 <tr>
                                     <td scope="row">{i+1}</td>
-                                    <td width="15%">{post["iduser"]}</td>
-                                    <td width="15%">{post["postid"]}</td>
+                                    <td width="10%">{post["iduser"]}</td>
+                                    <td width="10%">{post["postid"]}</td>
                                     <td className="text-center" width="40%">Post</td>
-                                    <td className="text-center" width="20%">
+                                    <td className="text-center" width="15%">
                                         <Link href={"/posts/" + post["postid"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
+                                    </td>
+                                    <td className="text-center" width="15%">
+                                        <Button variant="danger" onClick={(e) => {deletePost(post["postid"])}}>Delete</Button>
                                     </td>
                                 </tr>
                             )

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import ErrorPage from 'next/error';
+//import ErrorPage from 'next/error';
+import Error from 'next/error';
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 
@@ -64,11 +65,34 @@ const getPosts = () => {
     return posts_json;
 }
 
+const getServerSideProps = async ({query, req, res}) => {
+    var users_json = getUsers();
+
+    const {id} = query;
+
+    var in_users = false;
+    for (let i = 0; i < users_json.length; i++) {
+        if(users_json[i]["iduser"] == id){
+            in_users = true;
+            break;
+        }
+    }
+
+    if(!in_users){
+        res.writeHead(404, { location: `${encodeURI(req.url)}` }).end();
+        return { props: {} };
+    }
+    
+    return { props: {} };
+};
+
+export { getServerSideProps }
 
 const UsersId = () => {
     const router = useRouter()
-    const { id } = router.query
-    var users_json = getUsers();
+    const { id } = router.query;
+
+    /*var users_json = getUsers();
 
     var in_users = false;
     for (let i = 0; i < users_json.length; i++) {
@@ -80,9 +104,9 @@ const UsersId = () => {
 
     if(!in_users){
         return (
-            <ErrorPage statusCode={404} />
+            <Error statusCode={404} />
         );
-    }
+    }*/
     
     var posts_json = getPosts();
 
