@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 //import ErrorPage from 'next/error';
 import Error from 'next/error';
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 /*
@@ -65,6 +66,10 @@ const getPosts = () => {
     return posts_json;
 }
 
+const deleteUser = (id) => {
+    console.log("delete " + id);
+}
+
 const getServerSideProps = async ({query, req, res}) => {
     var users_json = getUsers();
 
@@ -92,6 +97,12 @@ const UsersId = () => {
     const router = useRouter()
     const { id } = router.query;
 
+    const submitUser = () => {
+        console.log("submit user");
+        console.log("uid: " + newUserId);
+        console.log("nn: " + newNickname);
+      }
+
     /*var users_json = getUsers();
 
     var in_users = false;
@@ -110,6 +121,9 @@ const UsersId = () => {
     
     var posts_json = getPosts();
 
+    const [newUserId, setNewUserId] = useState("");
+    const [newNickname, setNewNickname] = useState("");
+
     return (
         <div>
             <div className="m-5">
@@ -117,7 +131,62 @@ const UsersId = () => {
                 <h2 className="text-center">User Id: {id}</h2>
             </div>
             <div className="m-5">
-                <h2>User Info</h2>
+                <h2>User Info:</h2>
+            </div>
+            <div className="m-5">
+                <div className="row">
+                    <h4>User Id:</h4>
+                </div>
+                <div className="row">
+                    <h4>Nickname:</h4>
+                </div>
+            </div>
+            <div className="m-5 border border-dark">
+              <h1 className="text-center">Update User</h1>
+              <div className="row">
+                    <div className="col-3 text-center">
+                        <h3>Enter New User Id</h3>
+                    </div>
+                    <div className="col-3 text-center">
+                        <h3>Enter New Nickname</h3>
+                    </div>
+                </div>
+                <Form>
+                <div className="row">
+                    <div className="col-3 text-center">
+                        <Form.Group className="mb-3" controlId="formUserId">
+                            <Form.Label>User Id</Form.Label>
+                            <Form.Control placeholder="Enter your User Id (must be unique)" onChange={(e) => {
+                                setNewUserId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="col-3 text-center">
+                        <Form.Group className="mb-3" controlId="formNickname">
+                            <Form.Label>Nickname</Form.Label>
+                            <Form.Control placeholder="Enter your nickname" onChange={(e) => {
+                                setNewNickname(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                </div>
+                <br/>
+                <div className="row">
+                    <div className="col-3 text-center">
+                        <Button variant="primary" onClick={(e) => {submitUser()}}>Submit</Button>
+                    </div>
+                </div>
+            </Form>
+            <br/>
+            </div>
+            <div className="m-5"></div>
+            <div className="m-5">
+                <h3>Delete User:</h3>
+                <Button variant="danger" onClick={(e) => {deleteUser(id)}}>Delete</Button>
+            </div>
+            <div className="m-5"></div>
+            <div className="m-5">
+                <h3>User's Posts:</h3> 
             </div>
             <div className="m-5">
                 <table className="table table-sm table-responsive table-hover table-striped">

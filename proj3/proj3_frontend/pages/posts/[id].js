@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 //import ErrorPage from 'next/error';
 import Error from 'next/error';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 /*
@@ -90,6 +91,14 @@ export { getServerSideProps }
 const PostsId = () => {
     const router = useRouter();
     const { id } = router.query;
+
+    const submitPost = () => {
+      console.log("submit post");
+      console.log("uid: " + newUserId);
+      console.log("pid: " + newPostId);
+      console.log("ptxt: " + newPostText);
+      console.log("purl: " + newPostURL);
+    }
     
     /*var posts_json = getPosts();
 
@@ -109,6 +118,11 @@ const PostsId = () => {
 
     var comments_json = getComments();
 
+    const [newUserId, setNewUserId] = useState("");
+    const [newPostId, setNewPostId] = useState("");
+    const [newPostText, setNewPostText] = useState("");
+    const [newPostURL, setNewPostURL] = useState("");
+
     return (
         <div>
           <div className="m-5">
@@ -116,14 +130,90 @@ const PostsId = () => {
             <h2 className="text-center">Post Id: {id}</h2>
           </div>
           <div className="m-5">
-            <h2>Post</h2>
+            <h2>Post:</h2>
           </div>
           <div className="m-5">
-            <h3>Update Post:</h3>
+            <div className="row">
+              <h4>User Id:</h4>
+            </div>
+            <div className="row">
+              <h4>Post Id:</h4>
+            </div>
+            <div className="row">
+              <h4>Post Text:</h4>
+            </div>
+            <div className="row">
+              <h4>Post URL:</h4>
+            </div>
           </div>
+          <div className="m-5 border border-dark">
+              <h1 className="text-center">Update Post</h1>
+              <div className="row">
+                  <div className="col-3 text-center">
+                      <h3>Enter New User Id</h3>
+                  </div>
+                  <div className="col-3 text-center">
+                      <h3>Enter New Post Id</h3>
+                  </div>
+                  <div className="col-3 text-center">
+                      <h3>Enter New Text Post</h3>
+                  </div>
+                  <div className="col-3 text-center">
+                      <h3>Enter Image URL</h3>
+                  </div>
+              </div>
+              <Form>
+              <div className="row">
+                  <div className="col-3 text-center">
+                      <Form.Group className="mb-3" controlId="formUserId">
+                          <Form.Label>User Id</Form.Label>
+                          <Form.Control placeholder="Enter your User Id" onChange={(e) => {
+                              setNewUserId(e.target.value);
+                          }}/>
+                      </Form.Group>
+                  </div>
+                  <div className="col-3 text-center">
+                      <Form.Group className="mb-3" controlId="formPostId">
+                          <Form.Label>Post Id</Form.Label>
+                          <Form.Control placeholder="Enter your Post's Id (must be unique)" onChange={(e) => {
+                              setNewPostId(e.target.value);
+                          }}/>
+                      </Form.Group>
+                  </div>
+                  <div className="col-3 text-center">
+                      <Form.Group className="mb-3" controlId="formText">
+                          <Form.Label>Post Text</Form.Label>
+                          <Form.Control as="textarea" rows={3} placeholder="Enter the text for your post" onChange={(e) => {
+                              setNewPostText(e.target.value);
+                          }}/>
+                      </Form.Group>
+                  </div>
+                  <div className="col-3 text-center">
+                      <Form.Group className="mb-3" controlId="formImageURL">
+                          <Form.Label>Image URL</Form.Label>
+                          <Form.Control placeholder="Enter your Image URL (if wanted)" onChange={(e) => {
+                              setNewPostURL(e.target.value);
+                          }}/>
+                      </Form.Group>
+                  </div>
+              </div>
+              <br/>
+              <div className="row">
+                  <div className="col-3 text-center">
+                  <Button variant="primary" onClick={(e) => {submitPost()}}>Submit</Button>
+                  </div>
+              </div>
+            </Form>
+            <br/>
+          </div>
+          <div className="m-5"></div>
           <div className="m-5">
             <h3>Delete Post:</h3>
             <Button variant="danger" onClick={(e) => {deletePost(id)}}>Delete</Button>
+          </div>
+          <div className="m-5"></div>
+          <div className="m-5">
+            <h3>Comments:</h3> 
           </div>
           <div className="m-5">
             <table className="table table-sm table-responsive table-hover table-striped">
