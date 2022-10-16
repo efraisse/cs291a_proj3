@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 const getComments = () => {
     var comments_json = [
@@ -35,12 +36,34 @@ const Comments = () => {
         console.log("ctxt: " + newCommentText);
     }
 
+    const editComment = (i) => {
+        setEditNum(i);
+        console.log("edit " + i);
+        handleShow();
+    }
+
     var comments_json = getComments();
 
     const [newUserId, setNewUserId] = useState("");
     const [newPostId, setNewPostId] = useState("");
     const [newCommentId, setNewCommentId] = useState("");
     const [newCommentText, setNewCommentText] = useState("");
+
+    const [editNum, setEditNum] = useState(0);
+
+    const [showModal, setShowModal] = useState(false);
+
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
+
+    const handleCloseSubmit = () => {
+        console.log("submit edit");
+        console.log("uid: " + newUserId);
+        console.log("pid: " + newPostId);
+        console.log("cid: " + newCommentId);
+        console.log("ctxt: " + newCommentText);
+        setShowModal(false);
+    }
     
     return (
         <div>
@@ -132,11 +155,14 @@ const Comments = () => {
                                     <td width="10%">{comment["iduser"]}</td>
                                     <td width="10%">{comment["postid"]}</td>
                                     <td width="10%">{comment["idcomment"]}</td>
-                                    <td className="text-center" width="40%">{comment["comment"]}</td>
+                                    <td className="text-center" width="30%">{comment["comment"]}</td>
                                     <td className="text-center" width="10%">
                                         <Link href={"/posts/" + comment["postid"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
+                                    </td>
+                                    <td className="text-center" width="10%">
+                                        <Button variant="secondary" onClick={(e) => {editComment(i)}}>Edit Comment</Button>
                                     </td>
                                     <td className="text-center" width="10%">
                                         <Button variant="danger" onClick={(e) => {deleteComment(comment["idcomment"])}}>Delete</Button>
@@ -147,6 +173,53 @@ const Comments = () => {
                     </tbody>
                 </table>
             </div>
+            <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Comment</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formUserId">
+                            <Form.Label>New User Id</Form.Label>
+                            <Form.Control placeholder={comments_json[editNum]["iduser"]} onChange={(e) => {
+                                setNewUserId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formPostId">
+                            <Form.Label>New Post Id</Form.Label>
+                            <Form.Control placeholder={comments_json[editNum]["postid"]} onChange={(e) => {
+                                setNewPostId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formImageURL">
+                            <Form.Label>New Comment Id</Form.Label>
+                            <Form.Control placeholder={comments_json[editNum]["idcomment"]} onChange={(e) => {
+                                setNewCommentId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formText">
+                            <Form.Label>New Comment</Form.Label>
+                            <Form.Control as="textarea" rows={3} placeholder={comments_json[editNum]["comment"]} onChange={(e) => {
+                                setNewCommentText(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleCloseSubmit}>
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

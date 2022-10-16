@@ -50,17 +50,30 @@ const getUsers = () => {
     return users_json;
 }
 
+const getUserId = (i) => {
+    var userid_json = {
+        "test": 11,
+        "iduser": 5,
+        "nickname": "jeffrey_be20s",
+    }
+    return userid_json;
+}
+
 const getPosts = () => {
     var posts_json = [
         {
             "test": 12,
             "iduser": 1,
             "postid": 3,
+            "posttxt": "text",
+            "posturl": "url",
         },
         {
             "test": 11,
             "iduser": 5,
             "postid": 8,
+            "posttxt": "text",
+            "posturl": "url",
         }
     ];
     return posts_json;
@@ -118,6 +131,8 @@ const UsersId = () => {
             <Error statusCode={404} />
         );
     }*/
+
+    var userid_json = getUserId(id);
     
     var posts_json = getPosts();
 
@@ -135,10 +150,10 @@ const UsersId = () => {
             </div>
             <div className="m-5">
                 <div className="row">
-                    <h4>User Id:</h4>
+                    <h4>User Id: {userid_json["iduser"]}</h4>
                 </div>
                 <div className="row">
-                    <h4>Nickname:</h4>
+                    <h4>Nickname: {userid_json["nickname"]}</h4>
                 </div>
             </div>
             <div className="m-5 border border-dark">
@@ -156,7 +171,7 @@ const UsersId = () => {
                     <div className="col-3 text-center">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>User Id</Form.Label>
-                            <Form.Control placeholder="Enter your User Id (must be unique)" onChange={(e) => {
+                            <Form.Control placeholder={userid_json["iduser"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -164,7 +179,7 @@ const UsersId = () => {
                     <div className="col-3 text-center">
                         <Form.Group className="mb-3" controlId="formNickname">
                             <Form.Label>Nickname</Form.Label>
-                            <Form.Control placeholder="Enter your nickname" onChange={(e) => {
+                            <Form.Control placeholder={userid_json["nickname"]} onChange={(e) => {
                                 setNewNickname(e.target.value);
                             }}/>
                         </Form.Group>
@@ -194,7 +209,8 @@ const UsersId = () => {
                         <tr>
                             <th className="text-center"></th>
                             <th className="text-center">Post ID</th>
-                            <th className="text-center">Post</th>
+                            <th className="text-center">Post Text</th>
+                            <th className="text-center">Post Url</th>
                             <th className="text-center">View Posts</th>
                         </tr>
                     </thead>
@@ -204,7 +220,8 @@ const UsersId = () => {
                                 <tr>
                                     <td scope="row">{i+1}</td>
                                     <td width="15%">{post["postid"]}</td>
-                                    <td className="text-center" width="60%">Post</td>
+                                    <td className="text-center" width="35%">{post["posttxt"]}</td>
+                                    <td className="text-center" width="25%">{post["posturl"]}</td>
                                     <td className="text-center" width="15%">
                                         <Link href={"/posts/" + post["postid"]}>
                                             <Button variant="primary">View Post</Button>

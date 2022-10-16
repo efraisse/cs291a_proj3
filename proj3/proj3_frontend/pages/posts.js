@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 const getPosts = () => {
     var posts_json = [
@@ -9,11 +10,15 @@ const getPosts = () => {
           "test": 12,
           "iduser": 1,
           "postid": 3,
+          "posttxt": "text",
+          "posturl": "url",
         },
         {
           "test": 11,
           "iduser": 5,
           "postid": 8,
+          "posttxt": "text",
+          "posturl": "url",
         }
     ];
     return posts_json;
@@ -32,12 +37,34 @@ const Posts = () => {
         console.log("purl: " + newPostURL);
     }
 
+    const editPost = (i) => {
+        setEditNum(i);
+        console.log("edit " + i);
+        handleShow();
+    }
+
     var posts_json = getPosts();
 
     const [newUserId, setNewUserId] = useState("");
     const [newPostId, setNewPostId] = useState("");
     const [newPostText, setNewPostText] = useState("");
     const [newPostURL, setNewPostURL] = useState("");
+
+    const [editNum, setEditNum] = useState(0);
+
+    const [showModal, setShowModal] = useState(false);
+
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
+
+    const handleCloseSubmit = () => {
+        console.log("submit edit");
+        console.log("uid: " + newUserId);
+        console.log("pid: " + newPostId);
+        console.log("ptxt: " + newPostText);
+        console.log("purl: " + newPostURL);
+        setShowModal(false);
+    }
     
     return (
         <div>
@@ -115,8 +142,10 @@ const Posts = () => {
                             <th className="text-center"></th>
                             <th className="text-center">Poster User ID</th>
                             <th className="text-center">Post ID</th>
-                            <th className="text-center">Post</th>
+                            <th className="text-center">Post Text</th>
+                            <th className="text-center">Post URL</th>
                             <th className="text-center">View Posts</th>
+                            <th className="text-center">Edit Posts</th>
                             <th className="text-center">Delete Posts</th>
                         </tr>
                     </thead>
@@ -127,13 +156,17 @@ const Posts = () => {
                                     <td scope="row">{i+1}</td>
                                     <td width="10%">{post["iduser"]}</td>
                                     <td width="10%">{post["postid"]}</td>
-                                    <td className="text-center" width="40%">Post</td>
-                                    <td className="text-center" width="15%">
+                                    <td className="text-center" width="25%">{post["posttxt"]}</td>
+                                    <td className="text-center" width="15%">{post["posturl"]}</td>
+                                    <td className="text-center" width="10%">
                                         <Link href={"/posts/" + post["postid"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
                                     </td>
-                                    <td className="text-center" width="15%">
+                                    <td className="text-center" width="10%">
+                                        <Button variant="secondary" onClick={(e) => {editPost(i)}}>Edit Post</Button>
+                                    </td>
+                                    <td className="text-center" width="10%">
                                         <Button variant="danger" onClick={(e) => {deletePost(post["postid"])}}>Delete</Button>
                                     </td>
                                 </tr>
@@ -142,6 +175,53 @@ const Posts = () => {
                     </tbody>
                 </table>
             </div>
+            <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Post</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formUserId">
+                            <Form.Label>Edit User Id</Form.Label>
+                            <Form.Control placeholder={posts_json[editNum]["iduser"]} onChange={(e) => {
+                                setNewUserId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formPostId">
+                            <Form.Label>Edit Post Id</Form.Label>
+                            <Form.Control placeholder={posts_json[editNum]["postid"]} onChange={(e) => {
+                                setNewPostId(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formText">
+                            <Form.Label>Edit Post Text</Form.Label>
+                            <Form.Control as="textarea" rows={3} placeholder={posts_json[editNum]["posttxt"]} onChange={(e) => {
+                                setNewPostText(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                    <div className="row">
+                        <Form.Group className="mb-3" controlId="formImageURL">
+                            <Form.Label>Edit Image URL</Form.Label>
+                            <Form.Control placeholder={posts_json[editNum]["posturl"]} onChange={(e) => {
+                                setNewPostURL(e.target.value);
+                            }}/>
+                        </Form.Group>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleCloseSubmit}>
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

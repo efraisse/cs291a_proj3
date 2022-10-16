@@ -47,6 +47,17 @@ const getPosts = () => {
     return posts_json;
 }
 
+const getPostId = (i) => {
+  var postid_json = {
+    "test": 11,
+    "iduser": 5,
+    "postid": 8,
+    "posttxt": "text",
+    "posturl": "url",
+  };
+  return postid_json;
+}
+
 const getComments = () => {
     var comments_json = [
         {
@@ -116,6 +127,8 @@ const PostsId = () => {
         );
     }*/
 
+    var postid_json = getPostId(id);
+
     var comments_json = getComments();
 
     const [newUserId, setNewUserId] = useState("");
@@ -134,16 +147,16 @@ const PostsId = () => {
           </div>
           <div className="m-5">
             <div className="row">
-              <h4>User Id:</h4>
+              <h4>User Id: {postid_json["iduser"]}</h4>
             </div>
             <div className="row">
-              <h4>Post Id:</h4>
+              <h4>Post Id: {postid_json["postid"]}</h4>
             </div>
             <div className="row">
-              <h4>Post Text:</h4>
+              <h4>Post Text: {postid_json["posttxt"]}</h4>
             </div>
             <div className="row">
-              <h4>Post URL:</h4>
+              <h4>Post URL: {postid_json["posturl"]}</h4>
             </div>
           </div>
           <div className="m-5 border border-dark">
@@ -167,7 +180,7 @@ const PostsId = () => {
                   <div className="col-3 text-center">
                       <Form.Group className="mb-3" controlId="formUserId">
                           <Form.Label>User Id</Form.Label>
-                          <Form.Control placeholder="Enter your User Id" onChange={(e) => {
+                          <Form.Control placeholder={postid_json["iduser"]} onChange={(e) => {
                               setNewUserId(e.target.value);
                           }}/>
                       </Form.Group>
@@ -175,7 +188,7 @@ const PostsId = () => {
                   <div className="col-3 text-center">
                       <Form.Group className="mb-3" controlId="formPostId">
                           <Form.Label>Post Id</Form.Label>
-                          <Form.Control placeholder="Enter your Post's Id (must be unique)" onChange={(e) => {
+                          <Form.Control placeholder={postid_json["postid"]} onChange={(e) => {
                               setNewPostId(e.target.value);
                           }}/>
                       </Form.Group>
@@ -183,7 +196,7 @@ const PostsId = () => {
                   <div className="col-3 text-center">
                       <Form.Group className="mb-3" controlId="formText">
                           <Form.Label>Post Text</Form.Label>
-                          <Form.Control as="textarea" rows={3} placeholder="Enter the text for your post" onChange={(e) => {
+                          <Form.Control as="textarea" rows={3} placeholder={postid_json["posttxt"]} onChange={(e) => {
                               setNewPostText(e.target.value);
                           }}/>
                       </Form.Group>
@@ -191,7 +204,7 @@ const PostsId = () => {
                   <div className="col-3 text-center">
                       <Form.Group className="mb-3" controlId="formImageURL">
                           <Form.Label>Image URL</Form.Label>
-                          <Form.Control placeholder="Enter your Image URL (if wanted)" onChange={(e) => {
+                          <Form.Control placeholder={postid_json["posturl"]} onChange={(e) => {
                               setNewPostURL(e.target.value);
                           }}/>
                       </Form.Group>
