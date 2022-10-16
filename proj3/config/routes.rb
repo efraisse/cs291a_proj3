@@ -7,3 +7,4 @@ Rails.application.routes.draw do
   get 'users/:id', to: 'users#show'
   get 'comments', to: 'comments#index'
 end
+
