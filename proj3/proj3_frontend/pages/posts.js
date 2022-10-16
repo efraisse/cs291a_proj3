@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import fetch from 'unfetch';
 
+/*
 const getPosts = () => {
     var posts_json = [
         {
@@ -22,19 +24,34 @@ const getPosts = () => {
         }
     ];
     return posts_json;
-}
+}*/
 
 const deletePost = (i) => {
     console.log("delete " + i);
 }
 
 const Posts = () => {
+
+    const [posts_json, setPosts_json] = useState([]);
+
+    useEffect(() => {
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/posts";
+        fetch(rails_url+endpoint)
+            .then(response => 
+                response.json().then(data => {
+                    setPosts_json(data["data"])
+                    setLoading(false);
+            }))
+    }, [])
+
     const submitPost = () => {
         console.log("submit post");
         console.log("uid: " + newUserId);
         console.log("pid: " + newPostId);
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
+        console.log(data);
     }
 
     const editPost = (i) => {
@@ -43,7 +60,9 @@ const Posts = () => {
         handleShow();
     }
 
-    var posts_json = getPosts();
+    //var posts_json = getPosts();
+    
+    const [loading, setLoading] = useState(true);
 
     const [newUserId, setNewUserId] = useState("");
     const [newPostId, setNewPostId] = useState("");
@@ -64,6 +83,10 @@ const Posts = () => {
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
         setShowModal(false);
+    }
+
+    if(loading){
+        return <h1>Loading</h1>
     }
     
     return (
@@ -154,12 +177,12 @@ const Posts = () => {
                             return (
                                 <tr>
                                     <td scope="row">{i+1}</td>
-                                    <td width="10%">{post["iduser"]}</td>
-                                    <td width="10%">{post["postid"]}</td>
-                                    <td className="text-center" width="25%">{post["posttxt"]}</td>
-                                    <td className="text-center" width="15%">{post["posturl"]}</td>
+                                    <td width="10%">{post["attributes"]["iduser"]}</td>
+                                    <td width="10%">{post["attributes"]["idpost"]}</td>
+                                    <td className="text-center" width="25%">{post["attributes"]["text"]}</td>
+                                    <td className="text-center" width="15%">{post["attributes"]["imageurl"]}</td>
                                     <td className="text-center" width="10%">
-                                        <Link href={"/posts/" + post["postid"]}>
+                                        <Link href={"/posts/" + post["attributes"]["idpost"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
                                     </td>
@@ -167,7 +190,7 @@ const Posts = () => {
                                         <Button variant="secondary" onClick={(e) => {editPost(i)}}>Edit Post</Button>
                                     </td>
                                     <td className="text-center" width="10%">
-                                        <Button variant="danger" onClick={(e) => {deletePost(post["postid"])}}>Delete</Button>
+                                        <Button variant="danger" onClick={(e) => {deletePost(post["attributes"]["idpost"])}}>Delete</Button>
                                     </td>
                                 </tr>
                             )
@@ -183,7 +206,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>Edit User Id</Form.Label>
-                            <Form.Control placeholder={posts_json[editNum]["iduser"]} onChange={(e) => {
+                            <Form.Control placeholder={posts_json[editNum]["attributes"]["iduser"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -191,7 +214,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formPostId">
                             <Form.Label>Edit Post Id</Form.Label>
-                            <Form.Control placeholder={posts_json[editNum]["postid"]} onChange={(e) => {
+                            <Form.Control placeholder={posts_json[editNum]["attributes"]["idpost"]} onChange={(e) => {
                                 setNewPostId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -199,7 +222,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formText">
                             <Form.Label>Edit Post Text</Form.Label>
-                            <Form.Control as="textarea" rows={3} placeholder={posts_json[editNum]["posttxt"]} onChange={(e) => {
+                            <Form.Control as="textarea" rows={3} placeholder={posts_json[editNum]["attributes"]["text"]} onChange={(e) => {
                                 setNewPostText(e.target.value);
                             }}/>
                         </Form.Group>
@@ -207,7 +230,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formImageURL">
                             <Form.Label>Edit Image URL</Form.Label>
-                            <Form.Control placeholder={posts_json[editNum]["posturl"]} onChange={(e) => {
+                            <Form.Control placeholder={posts_json[editNum]["attributes"]["imagurl"]} onChange={(e) => {
                                 setNewPostURL(e.target.value);
                             }}/>
                         </Form.Group>

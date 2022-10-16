@@ -5,32 +5,6 @@ import Error from 'next/error';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-
-/*
-return {
-      notFound: true,
-    };*/
-
-
-/*
-async function getInitialProps({ query, res }) {
-    var posts_json = getPosts();
-
-    var in_posts = false;
-    for (let i = 0; i < posts_json.length; i++) {
-        if(posts_json[i]["postid"] == id){
-            in_posts = true;
-            break;
-        }
-    }
-
-    var id = query
-
-    return { in_posts, id }
-}
-PostsId.getInitialProps = getInitialProps
-*/
-
 const getPosts = () => {
     var posts_json = [
         {
@@ -77,13 +51,20 @@ const deletePost = (id) => {
 }
 
 const getServerSideProps = async ({query, req, res}) => {
-    var posts_json = getPosts();
+    //var posts_json = getPosts();
+    var rails_url = "http://localhost:3001";
+    var endpoint = "/posts";
+    var response = await fetch(rails_url+endpoint);
+    var data = await response.json();
+    //console.log(data);
+    var posts_json = data["data"];
+    //console.log(posts_json);
 
     const {id} = query;
 
     var in_posts = false;
     for (let i = 0; i < posts_json.length; i++) {
-        if(posts_json[i]["postid"] == id){
+        if(posts_json[i]["attributes"]["idpost"] == id){
             in_posts = true;
             break;
         }
