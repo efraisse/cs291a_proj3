@@ -18,6 +18,16 @@ class CommentsController < ApplicationController
     def create
         comment = Comment.new(comment_params)
 
+        user = User.find_by(iduser: comment.user_id)
+        post = Post.find_by(idpost: comment.post_id)
+
+        if (!post || !user)
+            raise ActionController::RoutingError.new('Not Found'), status: 404
+        end
+
+        comment.user_id = user.id
+        comment.post_id = post.id
+
         if comment.save
             render json: CommentSerializer.new(comment).serialized_json
         else

@@ -18,6 +18,14 @@ class PostsController < ApplicationController
     def create
         post = Post.new(post_params)
 
+        user = User.find_by(iduser: post.user_id)
+
+        if (!user)
+            raise ActionController::RoutingError.new('Not Found'), status: 404
+        end
+
+        post.user_id = user.id
+
         if post.save
             render json: PostSerializer.new(post).serialized_json
         else
