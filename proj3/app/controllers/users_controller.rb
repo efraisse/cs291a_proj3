@@ -25,8 +25,18 @@ class UsersController < ApplicationController
         end
     end
 
+    def edit
+        user = User.find_by(iduser: params[:id])
+
+        if user
+            render json: UserSerializer.new(user, options).serialized_json
+        else
+            raise ActionController::RoutingError.new('Not Found'), status: 404
+        end
+    end
+
     def update
-        user = User.find_by(iduser: params[:iduser])
+        user = User.find_by(iduser: params[:id])
 
         if user.update
             render json: UserSerializer.new(user, options).serialized_json
@@ -36,7 +46,7 @@ class UsersController < ApplicationController
     end
 
     def destroy #when destroying a user, need to destroy all comments and posts with that user
-        user = User.find_by(iduser: params[:iduser])
+        user = User.find_by(iduser: params[:id])
 
         if user.destroy
             head :no_content
@@ -48,7 +58,7 @@ class UsersController < ApplicationController
     private
 
     def user_params
-        params.require(user).permit(:id, :nickname)
+        params.require(:user).permit(:iduser, :nickname)
     end
 
     def options

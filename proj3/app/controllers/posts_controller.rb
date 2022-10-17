@@ -25,6 +25,16 @@ class PostsController < ApplicationController
         end
     end
 
+    def edit
+        post = Post.find_by(idpost: params[:id])
+
+        if post
+            render json: PostSerializer.new(post, options).serialized_json
+        else
+            raise ActionController::RoutingError.new('Not Found'), status: 404
+        end
+    end
+
     def update
         post = Post.find_by(idpost: params[:id])
 
@@ -33,7 +43,7 @@ class PostsController < ApplicationController
         else
             raise ActionController::RoutingError.new('Not Found'), status: 404
         end
-    end
+    endra
 
     def destroy #need to destroy all comments associated with this post
         post = Post.find_by(idpost: params[:id])
@@ -48,7 +58,7 @@ class PostsController < ApplicationController
     private
 
     def post_params
-        params.require(post).permit(:id, :text, :imageurl, :user_id)
+        params.require(:post).permit(:idpost, :text, :imageurl, :user_id)
     end
 
     def options
