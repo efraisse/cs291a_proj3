@@ -24,3 +24,4 @@ Rails.application.routes.draw do
   delete 'users/:id', to: 'users#destroy'
   delete 'posts/:id', to: 'posts#destroy'
 end
+
