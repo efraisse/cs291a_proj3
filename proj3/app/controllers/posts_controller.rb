@@ -43,7 +43,7 @@ class PostsController < ApplicationController
         else
             raise ActionController::RoutingError.new('Not Found'), status: 404
         end
-    endra
+    end
 
     def destroy #need to destroy all comments associated with this post
         post = Post.find_by(idpost: params[:id])
