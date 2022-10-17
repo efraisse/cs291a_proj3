@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import fetch from 'unfetch';
 
-const getUsers = () => {
+/*const getUsers = () => {
     var users_json = [
         {
           "test": 12,
@@ -18,13 +19,27 @@ const getUsers = () => {
         }
     ];
     return users_json;
-}
+}*/
 
 const deleteUser = (id) => {
     console.log("delete " + id);
 }
 
 const Users = () => {
+
+    const [users_json, setUsers_json] = useState([]);
+
+    useEffect(() => {
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users";
+        fetch(rails_url+endpoint)
+            .then(response => 
+                response.json().then(data => {
+                    setUsers_json(data["data"])
+                    setLoading(false);
+            }))
+    }, [])
+
     const submitUser = () => {
         console.log("submit user");
         console.log("uid: " + newUserId);
@@ -37,7 +52,9 @@ const Users = () => {
         handleShow();
     }
 
-    var users_json = getUsers();
+    //var users_json = getUsers();
+
+    const [loading, setLoading] = useState(true);
 
     const [newUserId, setNewUserId] = useState("");
     const [newNickname, setNewNickname] = useState("");
@@ -54,6 +71,10 @@ const Users = () => {
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
         setShowModal(false);
+    }
+
+    if(loading){
+        return <h1>Loading</h1>
     }
 
     return (
@@ -120,10 +141,10 @@ const Users = () => {
                             return (
                                 <tr>
                                     <td scope="row">{i+1}</td>
-                                    <td width="15%">{user["iduser"]}</td>
-                                    <td width="15%">{user["nickname"]}</td>
+                                    <td width="15%">{user["attributes"]["iduser"]}</td>
+                                    <td width="15%">{user["attributes"]["nickname"]}</td>
                                     <td className="text-center" width="30%">
-                                        <Link href={"/users/" + user["iduser"]}>
+                                        <Link href={"/users/" + user["attributes"]["iduser"]}>
                                             <Button variant="primary">View User</Button>
                                         </Link>
                                     </td>
@@ -131,7 +152,7 @@ const Users = () => {
                                         <Button variant="secondary" onClick={(e) => {editUser(i)}}>Edit User</Button>
                                     </td>
                                     <td className="text-center" width="10%">
-                                        <Button variant="danger" onClick={(e) => {deleteUser(user["iduser"])}}>Delete</Button>
+                                        <Button variant="danger" onClick={(e) => {deleteUser(user["attributes"]["iduser"])}}>Delete</Button>
                                     </td>
                                 </tr>
                             )
@@ -147,7 +168,7 @@ const Users = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>Edit User Id</Form.Label>
-                            <Form.Control placeholder={users_json[editNum]["iduser"]} onChange={(e) => {
+                            <Form.Control placeholder={users_json[editNum]["attributes"]["iduser"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -155,7 +176,7 @@ const Users = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formPostId">
                             <Form.Label>Edit Nickname</Form.Label>
-                            <Form.Control placeholder={users_json[editNum]["nickname"]} onChange={(e) => {
+                            <Form.Control placeholder={users_json[editNum]["attributes"]["nickname"]} onChange={(e) => {
                                 setNewNickname(e.target.value);
                             }}/>
                         </Form.Group>
