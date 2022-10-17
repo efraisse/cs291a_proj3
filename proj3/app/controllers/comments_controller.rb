@@ -38,7 +38,7 @@ class CommentsController < ApplicationController
     def update
         comment = Comment.find_by(idcomment: params[:id])
 
-        if comment.update
+        if comment.update(comment_params)
             render json: CommentSerializer.new(comment).serialized_json
         else
             raise ActionController::RoutingError.new('Not Found'), status: 404
