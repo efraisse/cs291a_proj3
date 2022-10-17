@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import fetch from 'unfetch';
+//import fetch from 'unfetch';
 
 /*
 const getPosts = () => {
@@ -66,11 +66,9 @@ const Posts = () => {
         var rails_url = "http://localhost:3001";
         var endpoint = "/posts";
         fetch(rails_url+endpoint, opts)
-            .then(response => 
-                response.json().then(data => {
-                    //window.location.reload();
-                    console.log("done");
-            }))
+            .then(response => {
+                window.location.reload();
+            })
 
     }
 
@@ -103,6 +101,24 @@ const Posts = () => {
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
         setShowModal(false);
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "idpost": newPostId,
+                "text": newPostText,
+                "imageurl": newPostURL,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/posts/"+posts_json[editNum]["attributes"]["idpost"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     if(loading){
@@ -197,7 +213,7 @@ const Posts = () => {
                             return (
                                 <tr>
                                     <td scope="row">{i+1}</td>
-                                    <td width="10%">{post["attributes"]["iduser"]}</td>
+                                    <td width="10%">{post["attributes"]["user_id"]}</td>
                                     <td width="10%">{post["attributes"]["idpost"]}</td>
                                     <td className="text-center" width="25%">{post["attributes"]["text"]}</td>
                                     <td className="text-center" width="15%">{post["attributes"]["imageurl"]}</td>
@@ -226,7 +242,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>Edit User Id</Form.Label>
-                            <Form.Control placeholder={posts_json[editNum]["attributes"]["iduser"]} onChange={(e) => {
+                            <Form.Control placeholder={posts_json[editNum]["attributes"]["user_id"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -250,7 +266,7 @@ const Posts = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formImageURL">
                             <Form.Label>Edit Image URL</Form.Label>
-                            <Form.Control placeholder={posts_json[editNum]["attributes"]["imagurl"]} onChange={(e) => {
+                            <Form.Control placeholder={posts_json[editNum]["attributes"]["imageurl"]} onChange={(e) => {
                                 setNewPostURL(e.target.value);
                             }}/>
                         </Form.Group>

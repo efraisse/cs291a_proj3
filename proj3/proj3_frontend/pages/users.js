@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import fetch from 'unfetch';
 
 /*const getUsers = () => {
     var users_json = [
@@ -44,6 +43,22 @@ const Users = () => {
         console.log("submit user");
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
+
+        const opts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "iduser": newUserId,
+                "nickname": newNickname,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users";
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     const editUser = (i) => {
@@ -71,6 +86,23 @@ const Users = () => {
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
         setShowModal(false);
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "iduser": newUserId,
+                "nickname": newNickname,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+users_json[editNum]["attributes"]["iduser"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                //window.location.reload();
+                console.log("here");
+            })
     }
 
     if(loading){

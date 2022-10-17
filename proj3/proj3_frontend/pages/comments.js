@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import fetch from 'unfetch';
 
 /*const getComments = () => {
     var comments_json = [
@@ -49,6 +48,24 @@ const Comments = () => {
         console.log("pid: " + newPostId);
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
+
+        const opts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "post_id": newPostId,
+                "idcomment": newCommentId,
+                "text": newCommentText,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments";
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     const editComment = (i) => {
@@ -80,6 +97,24 @@ const Comments = () => {
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
         setShowModal(false);
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "idpost": newPostId,
+                "idcomment": newCommentId,
+                "text": newCommentText,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments/"+comments_json[editNum]["attributes"]["idcomment"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     if(loading){
