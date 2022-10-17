@@ -38,7 +38,7 @@ class UsersController < ApplicationController
     def update
         user = User.find_by(iduser: params[:id])
 
-        if user.update
+        if user.update(user_params)
             render json: UserSerializer.new(user, options).serialized_json
         else
             raise ActionController::RoutingError.new('Not Found'), status: 404
