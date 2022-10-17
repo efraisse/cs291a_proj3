@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
     end
 
     def show
-        comment = Comment.find_by(idcomment: params[:idcomment])
+        comment = Comment.find_by(idcomment: params[:id])
 
         if comment
             render json: CommentSerializer.new(comment).serialized_json
@@ -25,8 +25,18 @@ class CommentsController < ApplicationController
         end
     end
 
+    def edit
+        comment = Comment.find_by(idcomment: params[:id])
+
+        if comment
+            render json: CommentSerializer.new(comment).serialized_json
+        else
+            raise ActionController::RoutingError.new('Not Found'), status: 404
+        end
+    end
+
     def update
-        comment = Comment.find_by(idcomment: params[:idcomment])
+        comment = Comment.find_by(idcomment: params[:id])
 
         if comment.update
             render json: CommentSerializer.new(comment).serialized_json
@@ -36,7 +46,7 @@ class CommentsController < ApplicationController
     end
 
     def destroy
-        comment = Comment.find_by(idcomment: params[:idcomment])
+        comment = Comment.find_by(idcomment: params[:id])
 
         if comment.destroy
             head :no_content
@@ -48,6 +58,6 @@ class CommentsController < ApplicationController
     private
 
     def comment_params
-        params.require(comment).permit(:idcomment, :text, :user_id, :post_id)
+        params.require(:comment).permit(:idcomment, :text, :user_id, :post_id)
     end
 end
