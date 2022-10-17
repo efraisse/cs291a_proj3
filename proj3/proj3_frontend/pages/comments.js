@@ -23,10 +23,6 @@ import Modal from 'react-bootstrap/Modal';
     return comments_json;
 }*/
 
-const deleteComment = (i) => {
-    console.log("delete " + i);
-}
-
 const Comments = () => {
 
     const [comments_json, setComments_json] = useState([]);
@@ -49,6 +45,11 @@ const Comments = () => {
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
 
+        if(newUserId == "" || newPostId == "" || newCommentId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+
         const opts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -62,6 +63,21 @@ const Comments = () => {
 
         var rails_url = "http://localhost:3001";
         var endpoint = "/comments";
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    const deleteComment = (i) => {
+        console.log("delete " + i);
+
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments/"+i;
         fetch(rails_url+endpoint, opts)
             .then(response => {
                 window.location.reload();
@@ -96,6 +112,12 @@ const Comments = () => {
         console.log("pid: " + newPostId);
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
+
+        if(newUserId == "" || newPostId == "" || newCommentId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+        
         setShowModal(false);
 
         const opts = {

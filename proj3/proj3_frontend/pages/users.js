@@ -20,10 +20,6 @@ import Modal from 'react-bootstrap/Modal';
     return users_json;
 }*/
 
-const deleteUser = (id) => {
-    console.log("delete " + id);
-}
-
 const Users = () => {
 
     const [users_json, setUsers_json] = useState([]);
@@ -44,6 +40,11 @@ const Users = () => {
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
 
+        if(newUserId == ""){
+            window.alert("Missing Id");
+            return;
+        }
+
         const opts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -55,6 +56,21 @@ const Users = () => {
 
         var rails_url = "http://localhost:3001";
         var endpoint = "/users";
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    const deleteUser = (i) => {
+        console.log("delete " + i);
+
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+i;
         fetch(rails_url+endpoint, opts)
             .then(response => {
                 window.location.reload();
@@ -85,6 +101,12 @@ const Users = () => {
         console.log("submit edit");
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
+
+        if(newUserId == ""){
+            window.alert("Missing Id");
+            return;
+        }
+        
         setShowModal(false);
 
         const opts = {
@@ -100,8 +122,7 @@ const Users = () => {
         var endpoint = "/users/"+users_json[editNum]["attributes"]["iduser"];
         fetch(rails_url+endpoint, opts)
             .then(response => {
-                //window.location.reload();
-                console.log("here");
+                window.location.reload();
             })
     }
 

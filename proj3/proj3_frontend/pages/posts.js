@@ -26,10 +26,6 @@ const getPosts = () => {
     return posts_json;
 }*/
 
-const deletePost = (i) => {
-    console.log("delete " + i);
-}
-
 const Posts = () => {
 
     const [posts_json, setPosts_json] = useState([]);
@@ -52,6 +48,11 @@ const Posts = () => {
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
 
+        if(newUserId == "" || newPostId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+
         const opts = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -70,6 +71,21 @@ const Posts = () => {
                 window.location.reload();
             })
 
+    }
+
+    const deletePost = (i) => {
+        console.log("delete " + i);
+
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/posts/"+i;
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     const editPost = (i) => {
@@ -100,6 +116,12 @@ const Posts = () => {
         console.log("pid: " + newPostId);
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
+
+        if(newUserId == "" || newPostId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+        
         setShowModal(false);
 
         const opts = {

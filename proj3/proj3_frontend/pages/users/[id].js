@@ -21,7 +21,7 @@ import Form from 'react-bootstrap/Form';
     return users_json;
 }*/
 
-const getUserId = (i) => {
+/*const getUserId = (i) => {
     var userid_json = {
         "test": 11,
         "iduser": 5,
@@ -48,11 +48,7 @@ const getPosts = () => {
         }
     ];
     return posts_json;
-}
-
-const deleteUser = (id) => {
-    console.log("delete " + id);
-}
+}*/
 
 const getServerSideProps = async ({query, req, res}) => {
     //var users_json = getUsers();
@@ -127,7 +123,43 @@ const UsersId = () => {
         console.log("submit user");
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
-      }
+
+        if(newUserId == ""){
+            window.alert("Missing Id");
+            return;
+        }
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "iduser": newUserId,
+                "nickname": newNickname,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+userid_json["attributes"]["iduser"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    const deleteUser = (i) => {
+        console.log("delete " + i);
+
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+i;
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
 
     //var userid_json = getUserId(id);
     

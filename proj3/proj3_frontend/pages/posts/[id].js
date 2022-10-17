@@ -46,10 +46,6 @@ import Form from 'react-bootstrap/Form';
     return comments_json;
 }*/
 
-const deletePost = (id) => {
-    console.log("delete " + id);
-}
-
 const getServerSideProps = async ({query, req, res}) => {
     //var posts_json = getPosts();
     var rails_url = "http://localhost:3001";
@@ -126,6 +122,44 @@ const PostsId = () => {
       console.log("pid: " + newPostId);
       console.log("ptxt: " + newPostText);
       console.log("purl: " + newPostURL);
+
+      if(newUserId == "" || newPostId == ""){
+          window.alert("Missing Ids");
+          return;
+      }
+
+      const opts = {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              "user_id": newUserId,
+              "idpost": newPostId,
+              "text": newPostText,
+              "imageurl": newPostURL,
+          })
+      };
+
+      var rails_url = "http://localhost:3001";
+      var endpoint = "/posts/"+postid_json["attributes"]["idpost"];
+      fetch(rails_url+endpoint, opts)
+          .then(response => {
+              window.location.reload();
+          })
+    }
+
+    const deletePost = (i) => {
+      console.log("delete " + i);
+
+      const opts = {
+          method: 'DELETE',
+      };
+
+      var rails_url = "http://localhost:3001";
+      var endpoint = "/posts/"+i;
+      fetch(rails_url+endpoint, opts)
+          .then(response => {
+              window.location.reload();
+          })
     }
 
     //var postid_json = getPostId(id);
