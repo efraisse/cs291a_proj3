@@ -51,7 +51,27 @@ const Posts = () => {
         console.log("pid: " + newPostId);
         console.log("ptxt: " + newPostText);
         console.log("purl: " + newPostURL);
-        console.log(data);
+
+        const opts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "idpost": newPostId,
+                "text": newPostText,
+                "imageurl": newPostURL,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/posts";
+        fetch(rails_url+endpoint, opts)
+            .then(response => 
+                response.json().then(data => {
+                    //window.location.reload();
+                    console.log("done");
+            }))
+
     }
 
     const editPost = (i) => {
