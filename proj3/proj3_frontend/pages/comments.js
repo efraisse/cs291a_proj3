@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-const getComments = () => {
+/*const getComments = () => {
     var comments_json = [
         {
           "iduser": 1,
@@ -21,19 +21,67 @@ const getComments = () => {
     ];
 
     return comments_json;
-}
-
-const deleteComment = (i) => {
-    console.log("delete " + i);
-}
+}*/
 
 const Comments = () => {
+
+    const [comments_json, setComments_json] = useState([]);
+
+    useEffect(() => {
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments";
+        fetch(rails_url+endpoint)
+            .then(response => 
+                response.json().then(data => {
+                    setComments_json(data["data"])
+                    setLoading(false);
+            }))
+    }, [])
+
     const submitComment = () => {
         console.log("submit comment");
         console.log("uid: " + newUserId);
         console.log("pid: " + newPostId);
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
+
+        if(newUserId == "" || newPostId == "" || newCommentId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+
+        const opts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "post_id": newPostId,
+                "idcomment": newCommentId,
+                "text": newCommentText,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments";
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    const deleteComment = (i) => {
+        console.log("delete " + i);
+
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments/"+i;
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
     const editComment = (i) => {
@@ -42,7 +90,9 @@ const Comments = () => {
         handleShow();
     }
 
-    var comments_json = getComments();
+    //var comments_json = getComments();
+
+    const [loading, setLoading] = useState(true);
 
     const [newUserId, setNewUserId] = useState("");
     const [newPostId, setNewPostId] = useState("");
@@ -62,7 +112,35 @@ const Comments = () => {
         console.log("pid: " + newPostId);
         console.log("cid: " + newCommentId);
         console.log("ctxt: " + newCommentText);
+
+        if(newUserId == "" || newPostId == "" || newCommentId == ""){
+            window.alert("Missing Ids");
+            return;
+        }
+        
         setShowModal(false);
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "user_id": newUserId,
+                "idpost": newPostId,
+                "idcomment": newCommentId,
+                "text": newCommentText,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/comments/"+comments_json[editNum]["attributes"]["idcomment"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    if(loading){
+        return <h1>Loading</h1>
     }
     
     return (
@@ -152,12 +230,12 @@ const Comments = () => {
                             return (
                                 <tr>
                                     <td width="5%">{i+1}</td>
-                                    <td width="10%">{comment["iduser"]}</td>
-                                    <td width="10%">{comment["postid"]}</td>
-                                    <td width="10%">{comment["idcomment"]}</td>
-                                    <td className="text-center" width="30%">{comment["comment"]}</td>
+                                    <td width="10%">{comment["attributes"]["user_id"]}</td>
+                                    <td width="10%">{comment["attributes"]["post_id"]}</td>
+                                    <td width="10%">{comment["attributes"]["idcomment"]}</td>
+                                    <td className="text-center" width="30%">{comment["attributes"]["text"]}</td>
                                     <td className="text-center" width="10%">
-                                        <Link href={"/posts/" + comment["postid"]}>
+                                        <Link href={"/posts/" + comment["attributes"]["post_id"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
                                     </td>
@@ -165,7 +243,7 @@ const Comments = () => {
                                         <Button variant="secondary" onClick={(e) => {editComment(i)}}>Edit Comment</Button>
                                     </td>
                                     <td className="text-center" width="10%">
-                                        <Button variant="danger" onClick={(e) => {deleteComment(comment["idcomment"])}}>Delete</Button>
+                                        <Button variant="danger" onClick={(e) => {deleteComment(comment["attributes"]["idcomment"])}}>Delete</Button>
                                     </td>
                                 </tr>
                             )
@@ -181,7 +259,7 @@ const Comments = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>New User Id</Form.Label>
-                            <Form.Control placeholder={comments_json[editNum]["iduser"]} onChange={(e) => {
+                            <Form.Control placeholder={comments_json[editNum]["attributes"]["user_id"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -189,7 +267,7 @@ const Comments = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formPostId">
                             <Form.Label>New Post Id</Form.Label>
-                            <Form.Control placeholder={comments_json[editNum]["postid"]} onChange={(e) => {
+                            <Form.Control placeholder={comments_json[editNum]["attributes"]["post_id"]} onChange={(e) => {
                                 setNewPostId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -197,7 +275,7 @@ const Comments = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formImageURL">
                             <Form.Label>New Comment Id</Form.Label>
-                            <Form.Control placeholder={comments_json[editNum]["idcomment"]} onChange={(e) => {
+                            <Form.Control placeholder={comments_json[editNum]["attributes"]["idcomment"]} onChange={(e) => {
                                 setNewCommentId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -205,7 +283,7 @@ const Comments = () => {
                     <div className="row">
                         <Form.Group className="mb-3" controlId="formText">
                             <Form.Label>New Comment</Form.Label>
-                            <Form.Control as="textarea" rows={3} placeholder={comments_json[editNum]["comment"]} onChange={(e) => {
+                            <Form.Control as="textarea" rows={3} placeholder={comments_json[editNum]["attributes"]["text"]} onChange={(e) => {
                                 setNewCommentText(e.target.value);
                             }}/>
                         </Form.Group>

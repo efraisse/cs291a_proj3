@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 //import ErrorPage from 'next/error';
 import Error from 'next/error';
@@ -7,36 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 
-/*
-<div className="m-5">
-        <table className="table table-sm table-responsive table-hover table-striped">
-          <thead>
-            <tr>
-              <th className="text-center"></th>
-              <th className="text-center">Post</th>
-              <th className="text-center">View Posts</th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts_json.map((post, i) => {
-              return (
-                <tr>
-                  <td scope="row">{i+1}</td>
-                  <td className="text-center" width="70%">Post</td>
-                  <td width="20%">
-                    <a href={window.location.origin+"/posts/"+post["postid"]}>
-                      <button type="button">View Post</button>
-                    </a>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>*/
-
-
-const getUsers = () => {
+/*const getUsers = () => {
     var users_json = [
         {
             "test": 12,
@@ -48,9 +19,9 @@ const getUsers = () => {
         }
     ];
     return users_json;
-}
+}*/
 
-const getUserId = (i) => {
+/*const getUserId = (i) => {
     var userid_json = {
         "test": 11,
         "iduser": 5,
@@ -77,20 +48,22 @@ const getPosts = () => {
         }
     ];
     return posts_json;
-}
-
-const deleteUser = (id) => {
-    console.log("delete " + id);
-}
+}*/
 
 const getServerSideProps = async ({query, req, res}) => {
-    var users_json = getUsers();
+    //var users_json = getUsers();
+    var rails_url = "http://localhost:3001";
+    var endpoint = "/users";
+    var response = await fetch(rails_url+endpoint);
+    var data = await response.json();
+    //console.log(data);
+    var users_json = data["data"];
 
     const {id} = query;
 
     var in_users = false;
     for (let i = 0; i < users_json.length; i++) {
-        if(users_json[i]["iduser"] == id){
+        if(users_json[i]["attributes"]["iduser"] == id){
             in_users = true;
             break;
         }
@@ -107,6 +80,42 @@ const getServerSideProps = async ({query, req, res}) => {
 export { getServerSideProps }
 
 const UsersId = () => {
+    const [userid_json, setUserid_json] = useState([]);
+    const [posts_json, setPosts_json] = useState([]);
+
+    useEffect(() => {
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+id;
+        fetch(rails_url+endpoint)
+            .then(response => 
+                response.json().then(data => {
+                    setUserid_json(data["data"]);
+                    var endpoint2 = "/posts";
+                    fetch(rails_url+endpoint2)
+                      .then(response2 =>
+                        response2.json().then(data2 => {
+                          var arr = data2["data"];
+                          var i = 0;
+                          while (i<arr.length){
+                            if(arr[i]["attributes"]["user_id"] != id){
+                              if(arr.length == 1){
+                                arr = [];
+                                break;
+                              }
+                              else{
+                                arr.splice(i,1);
+                              }
+                              continue;
+                            }
+                            i+=1;
+                          }
+                          setPosts_json(arr);
+                          setLoading(false);
+                        }))
+            }))
+    }, [])
+
     const router = useRouter()
     const { id } = router.query;
 
@@ -114,30 +123,56 @@ const UsersId = () => {
         console.log("submit user");
         console.log("uid: " + newUserId);
         console.log("nn: " + newNickname);
-      }
 
-    /*var users_json = getUsers();
-
-    var in_users = false;
-    for (let i = 0; i < users_json.length; i++) {
-        if(users_json[i]["iduser"] == id){
-            in_users = true;
-            break;
+        if(newUserId == ""){
+            window.alert("Missing Id");
+            return;
         }
+
+        const opts = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "iduser": newUserId,
+                "nickname": newNickname,
+            })
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+userid_json["attributes"]["iduser"];
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
     }
 
-    if(!in_users){
-        return (
-            <Error statusCode={404} />
-        );
-    }*/
+    const deleteUser = (i) => {
+        console.log("delete " + i);
 
-    var userid_json = getUserId(id);
+        const opts = {
+            method: 'DELETE',
+        };
+
+        var rails_url = "http://localhost:3001";
+        var endpoint = "/users/"+i;
+        fetch(rails_url+endpoint, opts)
+            .then(response => {
+                window.location.reload();
+            })
+    }
+
+    //var userid_json = getUserId(id);
     
-    var posts_json = getPosts();
+    const [loading, setLoading] = useState(true);
+    
+    //var posts_json = getPosts();
 
     const [newUserId, setNewUserId] = useState("");
     const [newNickname, setNewNickname] = useState("");
+
+    if(loading){
+        return <h1>Loading</h1>
+    }
 
     return (
         <div>
@@ -150,10 +185,10 @@ const UsersId = () => {
             </div>
             <div className="m-5">
                 <div className="row">
-                    <h4>User Id: {userid_json["iduser"]}</h4>
+                    <h4>User Id: {userid_json["attributes"]["iduser"]}</h4>
                 </div>
                 <div className="row">
-                    <h4>Nickname: {userid_json["nickname"]}</h4>
+                    <h4>Nickname: {userid_json["attributes"]["nickname"]}</h4>
                 </div>
             </div>
             <div className="m-5 border border-dark">
@@ -171,7 +206,7 @@ const UsersId = () => {
                     <div className="col-3 text-center">
                         <Form.Group className="mb-3" controlId="formUserId">
                             <Form.Label>User Id</Form.Label>
-                            <Form.Control placeholder={userid_json["iduser"]} onChange={(e) => {
+                            <Form.Control placeholder={userid_json["attributes"]["iduser"]} onChange={(e) => {
                                 setNewUserId(e.target.value);
                             }}/>
                         </Form.Group>
@@ -179,7 +214,7 @@ const UsersId = () => {
                     <div className="col-3 text-center">
                         <Form.Group className="mb-3" controlId="formNickname">
                             <Form.Label>Nickname</Form.Label>
-                            <Form.Control placeholder={userid_json["nickname"]} onChange={(e) => {
+                            <Form.Control placeholder={userid_json["attributes"]["nickname"]} onChange={(e) => {
                                 setNewNickname(e.target.value);
                             }}/>
                         </Form.Group>
@@ -219,11 +254,11 @@ const UsersId = () => {
                             return (
                                 <tr>
                                     <td scope="row">{i+1}</td>
-                                    <td width="15%">{post["postid"]}</td>
-                                    <td className="text-center" width="35%">{post["posttxt"]}</td>
-                                    <td className="text-center" width="25%">{post["posturl"]}</td>
+                                    <td width="15%">{post["attributes"]["idpost"]}</td>
+                                    <td className="text-center" width="35%">{post["attributes"]["text"]}</td>
+                                    <td className="text-center" width="25%">{post["attributes"]["imageurl"]}</td>
                                     <td className="text-center" width="15%">
-                                        <Link href={"/posts/" + post["postid"]}>
+                                        <Link href={"/posts/" + post["attributes"]["idpost"]}>
                                             <Button variant="primary">View Post</Button>
                                         </Link>
                                     </td>
