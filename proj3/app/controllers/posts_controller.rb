@@ -17,6 +17,7 @@ class PostsController < ApplicationController
 
     def create
         post = Post.new(post_params)
+        puts(post.user_id)
 
         user = User.find_by(iduser: post.user_id)
 
@@ -25,6 +26,8 @@ class PostsController < ApplicationController
         end
 
         post.user = user
+
+        post.id = post.idpost
 
         if post.save
             render json: PostSerializer.new(post).serialized_json

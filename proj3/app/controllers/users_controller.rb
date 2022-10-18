@@ -18,6 +18,8 @@ class UsersController < ApplicationController
     def create
         user = User.new(user_params)
 
+        user.id = user.iduser
+
         if user.save
             render json: UserSerializer.new(user).serialized_json
         else

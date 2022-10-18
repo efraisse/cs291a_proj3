@@ -28,6 +28,8 @@ class CommentsController < ApplicationController
         comment.user = user
         comment.post = post
 
+        comment.id = comment.idcomment
+
         if comment.save
             render json: CommentSerializer.new(comment).serialized_json
         else
