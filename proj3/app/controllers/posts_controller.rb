@@ -24,7 +24,7 @@ class PostsController < ApplicationController
             raise ActionController::RoutingError.new('Not Found'), status: 404
         end
 
-        post.user_id = user.id
+        post.user = user
 
         if post.save
             render json: PostSerializer.new(post).serialized_json

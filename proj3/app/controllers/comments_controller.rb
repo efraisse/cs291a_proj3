@@ -25,8 +25,8 @@ class CommentsController < ApplicationController
             raise ActionController::RoutingError.new('Not Found'), status: 404
         end
 
-        comment.user_id = user.id
-        comment.post_id = post.id
+        comment.user = user
+        comment.post = post
 
         if comment.save
             render json: CommentSerializer.new(comment).serialized_json
